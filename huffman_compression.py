@@ -11,18 +11,27 @@
 ##                           ##
 ###############################
 
-import sys , string
+import sys
+import string
 
 codes = {}
 
 
-def frequency(text):
+def frequency(file_name):
 	# Extracts frequency of each character and 
 	# stores in a dictionary.
 
 	freqs = {}
-	for ch in text:
-		freqs[ch] = freqs.get(ch,0) + 1
+
+        # Read char by char from file.
+        with open(file_name) as file_object:
+            while True:
+                char=file_object.read(1)
+	        
+                if not char: break
+
+                else:
+		    freqs[char] = freqs.get(char,0) + 1
 
 	return freqs
 
@@ -69,6 +78,9 @@ def trimTree(tree):
 
 
 def assignCodes(node,pat=''):
+        # Assigns codes greedily based on frequency of character
+        # Assigns less bits to character with more frequency.
+
 	global codes
 
 	# A leaf set its code
@@ -94,6 +106,7 @@ def encode(str):
 
 
 def decode(tree,str):
+        # Decode the compressed files back to original files. 
 
 	output = ""
 	p = tree
@@ -118,8 +131,9 @@ def decode(tree,str):
 
 def main():
 	debug = None
-	str = sys.stdin.read()
-	freqs = frequency(str)
+        file_name=sys.argv[1]
+        
+	freqs = frequency(file_name)
 	tuples = sortFreq(freqs)
 
 	tree = buildTree(tuples)
